@@ -12,32 +12,35 @@
     <div id="login-screen">
         <div class="login-box">
             <h2>Chat do Kyo</h2>
-            <input type="text" id="user-input" placeholder="Usuário" style="width: 80%"><br>
-            <input type="password" id="pass-input" placeholder="Senha" style="width: 80%"><br><br>
+            <input type="text" id="user-input" placeholder="Usuário"><br>
+            <input type="password" id="pass-input" placeholder="Senha"><br><br>
             <button onclick="fazerLogin()">Entrar</button>
             <button class="btn-alt" onclick="entrarVisitante()">Visitante</button>
         </div>
     </div>
 
     <div id="painel-kyo" style="display:none;">
-        <div style="display:flex; justify-content:space-between;">
-            <h2>Painel do Kyo (Histórico Global)</h2>
-            <button onclick="fecharPainel()" style="background:red">Sair</button>
+        <div class="painel-header">
+            <h2>Painel de Controle 🖥️</h2>
+            <button onclick="fecharPainel()" style="background:red">Sair do Painel</button>
         </div>
-        <div id="logs-adm"></div>
-        <h3>Arquivos Capturados</h3>
-        <div id="grid-adm" class="grid-arquivos"></div>
+        <div class="painel-corpo">
+            <h3>💬 Histórico de Mensagens</h3>
+            <div id="logs-adm"></div>
+            <h3>📁 Arquivos Capturados</h3>
+            <div id="grid-adm" class="grid-arquivos"></div>
+        </div>
     </div>
 
     <div id="chat-container" style="display:none;">
         <div class="header">
-            <div>Olá, <span id="display-name"></span></div>
-            <button id="admin-btn" style="display:none; background:#000;" onclick="abrirPainelKyo()">PAINEL KYO</button>
-            <div>ID: <small id="myId">...</small></div>
+            <div id="user-info">👤 <span id="display-name"></span></div>
+            <button id="admin-btn" style="display:none; background:#000;" onclick="abrirPainelKyo()">PAINEL ADMIN</button>
+            <div id="id-info">ID: <small id="myId">...</small></div>
         </div>
 
-        <div style="padding:10px; background:#eee; display:flex; gap:5px;">
-            <input id="peerId" placeholder="ID do amigo" style="flex-grow:1">
+        <div class="conn-bar">
+            <input id="peerId" placeholder="Cole o ID do amigo aqui">
             <button onclick="connect()">Conectar</button>
         </div>
 
