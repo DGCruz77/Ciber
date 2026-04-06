@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Kyo Chat Premium 🚀</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Kyo Chat</h2>
+            <input type="text" id="user-input" placeholder="Usuário">
+            <input type="password" id="pass-input" placeholder="Senha">
+            <br>
+            <button onclick="fazerLogin()">Entrar</button>
+            <button class="btn-alt" onclick="entrarVisitante()">Visitante</button>
+        </div>
+    </div>
+
+    <div id="chat-container" style="display: none;">
+        <h3>Olá, <span id="display-name"></span></h3>
+        <p>Seu ID: <strong id="myId">...</strong></p>
+        
+        <input id="peerId" placeholder="ID do amigo">
+        <button onclick="connect()">Conectar</button>
+
+        <div id="chat"></div>
+
+        <div class="input-area">
+            <input id="msg" placeholder="Mensagem..." onkeypress="if(event.key==='Enter') send()">
+            <input type="file" id="file-input" style="display:none">
+            <button class="btn-alt" onclick="document.getElementById('file-input').click()">📎</button>
+            <button onclick="send()">Enviar</button>
+        </div>
+    </div>
+
+    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
