@@ -5,39 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Privado</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
             <h2>Acesso Restrito</h2>
-            <input type="text" placeholder="ID_USUARIO">
-            <input type="password" placeholder="CODIGO_ACESSO">
-            <button>Inicializar</button>
-            <button class="btn-alt">Modo Visitante</button>
+            <input type="text" id="user-input" placeholder="NOME_USUARIO">
+            <input type="password" id="pass-input" placeholder="CODIGO_ACESSO">
+            <button onclick="fazerLogin()">Inicializar</button>
+            <button class="btn-alt" onclick="entrarVisitante()">Modo Visitante</button>
         </div>
     </div>
 
-    <div id="chat-container">
+    <div id="chat-container" style="display: none;">
         <header class="header">
-            <div id="user-info">USUÁRIO: <span>OPERADOR_01</span></div>
-            <button id="admin-btn" onclick="abrirPainel()">Painel de Controle</button>
+            <div id="user-info">USUÁRIO: <span id="display-name">---</span> | ID: <small id="myId">...</small></div>
+            <button id="admin-btn" style="display:none;" onclick="abrirPainel()">Painel de Controle</button>
         </header>
 
         <div class="conn-bar">
-            <input type="text" placeholder="ID DO DESTINATÁRIO...">
-            <button>Conectar</button>
+            <input type="text" id="peerId" placeholder="ID DO DESTINATÁRIO...">
+            <button onclick="connect()">Conectar</button>
         </div>
 
         <div id="chat">
-            <div class="msg-peer">Sistema pronto. Aguardando estabelecimento de conexão segura...</div>
-            <div class="msg-me">Solicitação de handshake enviada.</div>
+            <div class="msg-peer">Sistema pronto. Aguardando conexão...</div>
         </div>
 
         <div class="input-area">
-            <button class="btn-alt">+</button>
-            <input type="text" placeholder="Digite sua mensagem...">
-            <button>ENVIAR</button>
+            <input type="file" id="file-input" style="display: none;">
+            <button class="btn-alt" onclick="document.getElementById('file-input').click()">+</button>
+            
+            <input type="text" id="msg" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter') send()">
+            <button onclick="send()">ENVIAR</button>
         </div>
     </div>
 
@@ -48,32 +50,15 @@
         </div>
         <div class="painel-corpo">
             <h3>Logs de Atividade</h3>
-            <div id="logs-adm">
-                <div><small>[16:05:12]</small> <b>SESSÃO_INICIADA</b>: Operador autenticado com sucesso.</div>
-                <div><small>[16:05:40]</small> <b>CRIPTOGRAFIA</b>: Camada de segurança ativa.</div>
-            </div>
+            <div id="logs-adm"></div>
 
-            <h3>Arquivos Armazenados</h3>
-            <div class="grid-arquivos">
-                <div class="card-arquivo">
-                    <small>backup_dados.zip</small>
-                    <a href="#">Baixar</a>
-                </div>
-                <div class="card-arquivo">
-                    <small>config_rede.json</small>
-                    <a href="#">Baixar</a>
-                </div>
-            </div>
+            <h3>Arquivos Transmitidos</h3>
+            <div class="grid-arquivos" id="grid-adm"></div>
         </div>
     </div>
 
-    <script>
-        function abrirPainel() {
-            document.getElementById('painel-admin').style.display = 'flex';
-        }
-        function fecharPainel() {
-            document.getElementById('painel-admin').style.display = 'none';
-        }
-    </script>
+    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+
+    <script src="script.js"></script>
 </body>
 </html>

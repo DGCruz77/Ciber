@@ -3,11 +3,10 @@ let conn;
 let logGlobal = [];
 let arquivosGlobal = [];
 
-// --- CONFIGURAÇÃO DE USUÁRIOS E ADMS ---
+// Base de usuários (ajustada para remover referências externas)
 const usuarios = {
-    "kyo": { senha: "777", id: "KYO-VIP", cargo: "admin" },
-    "admin": { senha: "123", id: "ADMIN-01", cargo: "admin" },
-    "amigo": { senha: "999", id: "USER-02", cargo: "membro" } // Este não vê o painel
+    "admin": { senha: "123", id: "ADMIN-PRIVADO", cargo: "admin" },
+    "operador": { senha: "777", id: "OP-01", cargo: "membro" }
 };
 
 function fazerLogin() {
@@ -18,20 +17,19 @@ function fazerLogin() {
         const dadosUser = usuarios[user];
         document.getElementById('display-name').innerText = user;
         
-        // Se for admin, mostramos o botão
         if (dadosUser.cargo === "admin") {
             document.getElementById('admin-btn').style.display = 'block';
         }
         
         inicializarPeer(dadosUser.id);
     } else {
-        alert("Usuário ou senha incorretos!");
+        alert("Acesso negado: Credenciais inválidas.");
     }
 }
 
 function entrarVisitante() {
     document.getElementById('display-name').innerText = "Visitante";
-    inicializarPeer(); // Gera ID aleatório, sem cargo de admin
+    inicializarPeer();
 }
 
 function inicializarPeer(idFixo = null) {
@@ -49,11 +47,9 @@ function inicializarPeer(idFixo = null) {
     });
 }
 
-// --- FUNÇÕES DE CONEXÃO ---
 async function connect() {
-    if (window.Notification && Notification.permission !== 'granted') await Notification.requestPermission();
     const id = document.getElementById("peerId").value;
-    if (!id) return alert("Digite o ID do amigo!");
+    if (!id) return alert("Digite o ID do destinatário!");
     conn = peer.connect(id);
     setup();
 }
@@ -61,7 +57,7 @@ async function connect() {
 function setup() {
     if (!conn) return;
     conn.on('open', () => {
-        log("Sistema: Conexão Estabelecida!", "msg-me");
+        log("Sistema: Conexão Estabelecida!", "msg-peer");
     });
     
     conn.on('data', data => {
@@ -70,7 +66,6 @@ function setup() {
         } else {
             log(data, "msg-peer");
             tocarSom();
-            notificar(data);
         }
     });
 }
@@ -78,10 +73,19 @@ function setup() {
 function log(msg, type) {
     const chat = document.getElementById("chat");
     const tempo = new Date().toLocaleTimeString();
-    chat.innerHTML += `<div class="${type}">${msg}</div>`;
+    
+    // Se a mensagem for HTML (imagem), insere como HTML, senão como texto
+    const div = document.createElement('div');
+    div.className = type;
+    if(msg.includes('<img') || msg.includes('<a')) {
+        div.innerHTML = msg;
+    } else {
+        div.innerText = msg;
+    }
+    
+    chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
     
-    // Salva tudo para os Admins verem no painel
     logGlobal.push({ tempo, msg, type });
 }
 
@@ -94,7 +98,7 @@ function send() {
     }
 }
 
-// --- ARQUIVOS E IMAGENS ---
+// Lógica de arquivos
 document.getElementById('file-input').onchange = e => {
     const file = e.target.files[0];
     if (file && conn && conn.open) {
@@ -102,7 +106,7 @@ document.getElementById('file-input').onchange = e => {
         reader.onload = ev => {
             const arquivo = { file: ev.target.result, fileName: file.name, fileType: file.type };
             conn.send(arquivo);
-            log("Você enviou: " + file.name, "msg-me");
+            log("Arquivo enviado: " + file.name, "msg-me");
             arquivosGlobal.push(arquivo);
         };
         reader.readAsArrayBuffer(file);
@@ -121,25 +125,19 @@ function receberArquivo(data) {
     }
 }
 
-// --- PAINEL DO ADMIN ---
-function abrirPainelKyo() {
+function abrirPainel() {
     const logs = document.getElementById('logs-adm');
     const grid = document.getElementById('grid-adm');
     
-    logs.innerHTML = logGlobal.map(m => `<div><small>${m.tempo}</small> <b>${m.type}:</b> ${m.msg}</div>`).join('');
+    logs.innerHTML = logGlobal.map(m => `<div>[${m.tempo}] ${m.msg}</div>`).join('');
     
     grid.innerHTML = arquivosGlobal.map(a => {
         const url = a.url || URL.createObjectURL(new Blob([a.file], {type: a.fileType}));
-        return `
-        <div class="card-arquivo">
-            <small>${a.fileName}</small><br>
-            <a href="${url}" download="${a.fileName}">Baixar</a>
-        </div>`;
+        return `<div class="card-arquivo"><small>${a.fileName}</small><br><a href="${url}" download="${a.fileName}">Download</a></div>`;
     }).join('');
     
-    document.getElementById('painel-kyo').style.display = 'block';
+    document.getElementById('painel-admin').style.display = 'flex';
 }
 
-function fecharPainel() { document.getElementById('painel-kyo').style.display = 'none'; }
+function fecharPainel() { document.getElementById('painel-admin').style.display = 'none'; }
 function tocarSom() { document.getElementById("notifSound").play().catch(() => {}); }
-function notificar(m) { if (document.hidden) new Notification("Kyo Chat", { body: m }); }
