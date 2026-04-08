@@ -77,3 +77,73 @@ body {
 .grid-arquivos { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
 .card-arquivo { background: var(--bg-card); padding: 10px; border-radius: 5px; border: 1px solid var(--border); text-align: center; }
 .card-arquivo a { color: var(--cyan); font-size: 10px; }
+
+/* Layout Admin Profissional */
+.admin-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    background: #000;
+}
+
+.admin-sidebar {
+    width: 250px;
+    border-right: 1px solid var(--border);
+    padding: 15px;
+    background: var(--bg-deep);
+    overflow-y: auto;
+}
+
+.admin-view {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.conversa-item {
+    padding: 12px;
+    background: var(--bg-surface);
+    margin-bottom: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+}
+
+.conversa-item:hover { border-color: var(--neon); }
+
+.admin-msg-linha {
+    padding: 8px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.delete-msg {
+    color: var(--red);
+    cursor: pointer;
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+#logs-adm-detalhado {
+    flex: 1;
+    background: #080808;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-y: auto;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.btn-danger {
+    background: var(--red);
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}

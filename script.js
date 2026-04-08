@@ -1,40 +1,28 @@
 let peer;
 let conn;
-let logGlobal = [];
-let arquivosGlobal = [];
+let db = JSON.parse(localStorage.getItem('chat_privado_db')) || {}; 
+let conversaAtivaAdmin = null;
 
-// Base de usuários (ajustada para remover referências externas)
 const usuarios = {
-    "admin": { senha: "123", id: "ADMIN-PRIVADO", cargo: "admin" },
-    "operador": { senha: "777", id: "OP-01", cargo: "membro" }
+    "admin": { senha: "123", cargo: "admin" }
 };
 
+// --- LOGIN E INICIALIZAÇÃO ---
 function fazerLogin() {
     const user = document.getElementById('user-input').value;
     const pass = document.getElementById('pass-input').value;
 
     if (usuarios[user] && usuarios[user].senha === pass) {
-        const dadosUser = usuarios[user];
         document.getElementById('display-name').innerText = user;
-        
-        if (dadosUser.cargo === "admin") {
-            document.getElementById('admin-btn').style.display = 'block';
-        }
-        
-        inicializarPeer(dadosUser.id);
+        if (usuarios[user].cargo === "admin") document.getElementById('admin-btn').style.display = 'block';
+        inicializarPeer();
     } else {
-        alert("Acesso negado: Credenciais inválidas.");
+        alert("Credenciais Inválidas");
     }
 }
 
-function entrarVisitante() {
-    document.getElementById('display-name').innerText = "Visitante";
-    inicializarPeer();
-}
-
-function inicializarPeer(idFixo = null) {
-    peer = idFixo ? new Peer(idFixo) : new Peer();
-
+function inicializarPeer() {
+    peer = new Peer();
     peer.on('open', id => {
         document.getElementById("myId").innerText = id;
         document.getElementById('login-screen').style.display = 'none';
@@ -43,101 +31,139 @@ function inicializarPeer(idFixo = null) {
 
     peer.on('connection', c => {
         conn = c;
-        setup();
+        setupConn();
     });
 }
 
-async function connect() {
+// --- CONEXÃO E MENSAGENS ---
+function connect() {
     const id = document.getElementById("peerId").value;
-    if (!id) return alert("Digite o ID do destinatário!");
+    if (!id) return;
     conn = peer.connect(id);
-    setup();
+    setupConn();
 }
 
-function setup() {
-    if (!conn) return;
+function setupConn() {
     conn.on('open', () => {
-        log("Sistema: Conexão Estabelecida!", "msg-peer");
+        salvarNoDB(conn.peer, "Sistema", "Conexão Estabelecida");
     });
     
     conn.on('data', data => {
-        if (data.file) {
-            receberArquivo(data);
-        } else {
-            log(data, "msg-peer");
-            tocarSom();
+        salvarNoDB(conn.peer, "Recebido", data);
+        if (document.getElementById('chat-container').style.display !== 'none') {
+            exibirNoChat(data, "msg-peer");
         }
     });
-}
-
-function log(msg, type) {
-    const chat = document.getElementById("chat");
-    const tempo = new Date().toLocaleTimeString();
-    
-    // Se a mensagem for HTML (imagem), insere como HTML, senão como texto
-    const div = document.createElement('div');
-    div.className = type;
-    if(msg.includes('<img') || msg.includes('<a')) {
-        div.innerHTML = msg;
-    } else {
-        div.innerText = msg;
-    }
-    
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    
-    logGlobal.push({ tempo, msg, type });
 }
 
 function send() {
     const input = document.getElementById("msg");
     if (conn && conn.open && input.value) {
         conn.send(input.value);
-        log(input.value, "msg-me");
+        salvarNoDB(conn.peer, "Enviado", input.value);
+        exibirNoChat(input.value, "msg-me");
         input.value = "";
     }
 }
 
-// Lógica de arquivos
-document.getElementById('file-input').onchange = e => {
-    const file = e.target.files[0];
-    if (file && conn && conn.open) {
-        const reader = new FileReader();
-        reader.onload = ev => {
-            const arquivo = { file: ev.target.result, fileName: file.name, fileType: file.type };
-            conn.send(arquivo);
-            log("Arquivo enviado: " + file.name, "msg-me");
-            arquivosGlobal.push(arquivo);
-        };
-        reader.readAsArrayBuffer(file);
-    }
-};
-
-function receberArquivo(data) {
-    const blob = new Blob([data.file], { type: data.fileType });
-    const url = URL.createObjectURL(blob);
-    arquivosGlobal.push({ ...data, url });
-    
-    if (data.fileType.startsWith('image/')) {
-        log(`<img src="${url}" style="max-width:100%; border-radius:5px;">`, "msg-peer");
-    } else {
-        log(`Arquivo: <a href="${url}" download="${data.fileName}">${data.fileName}</a>`, "msg-peer");
-    }
+function exibirNoChat(msg, classe) {
+    const chat = document.getElementById("chat");
+    chat.innerHTML += `<div class="${classe}">${msg}</div>`;
+    chat.scrollTop = chat.scrollHeight;
 }
 
+// --- SISTEMA DE BANCO DE DADOS (LOCAL STORAGE) ---
+function salvarNoDB(peerId, remetente, texto) {
+    if (!db[peerId]) db[peerId] = [];
+    const msgObj = {
+        id: Date.now(),
+        horario: new Date().toLocaleTimeString(),
+        remetente: remetente,
+        texto: texto
+    };
+    db[peerId].push(msgObj);
+    localStorage.setItem('chat_privado_db', JSON.stringify(db));
+    if (document.getElementById('painel-admin').style.display === 'flex') atualizarPainel();
+}
+
+// --- FUNÇÕES DO PAINEL ADMIN ---
 function abrirPainel() {
-    const logs = document.getElementById('logs-adm');
-    const grid = document.getElementById('grid-adm');
-    
-    logs.innerHTML = logGlobal.map(m => `<div>[${m.tempo}] ${m.msg}</div>`).join('');
-    
-    grid.innerHTML = arquivosGlobal.map(a => {
-        const url = a.url || URL.createObjectURL(new Blob([a.file], {type: a.fileType}));
-        return `<div class="card-arquivo"><small>${a.fileName}</small><br><a href="${url}" download="${a.fileName}">Download</a></div>`;
-    }).join('');
-    
     document.getElementById('painel-admin').style.display = 'flex';
+    atualizarPainel();
 }
 
-function fecharPainel() { document.getElementById('painel-admin').style.display = 'none'; }
-function tocarSom() { document.getElementById("notifSound").play().catch(() => {}); }
+function fecharPainel() {
+    document.getElementById('painel-admin').style.display = 'none';
+}
+
+function atualizarPainel() {
+    const lista = document.getElementById('lista-conversas');
+    lista.innerHTML = "";
+    
+    Object.keys(db).forEach(peerId => {
+        const item = document.createElement('div');
+        item.className = 'conversa-item';
+        item.innerHTML = `
+            <span>ID: ${peerId}</span>
+            <button onclick="apagarConversa('${peerId}')">🗑️</button>
+        `;
+        item.onclick = (e) => {
+            if (e.target.tagName !== 'BUTTON') selecionarConversa(peerId);
+        };
+        lista.appendChild(item);
+    });
+}
+
+function selecionarConversa(peerId) {
+    conversaAtivaAdmin = peerId;
+    document.getElementById('id-conversa-ativa').innerText = peerId;
+    renderizarMensagensAdmin();
+}
+
+function renderizarMensagensAdmin() {
+    const view = document.getElementById('logs-adm-detalhado');
+    view.innerHTML = "";
+    
+    if (!conversaAtivaAdmin || !db[conversaAtivaAdmin]) return;
+
+    db[conversaAtivaAdmin].forEach((m, index) => {
+        const msgLinha = document.createElement('div');
+        msgLinha.className = 'admin-msg-linha';
+        msgLinha.innerHTML = `
+            <small>[${m.horario}]</small> <b>${m.remetente}:</b> ${m.texto}
+            <span class="delete-msg" onclick="apagarMensagem('${conversaAtivaAdmin}', ${index})">Excluir</span>
+        `;
+        view.appendChild(msgLinha);
+    });
+}
+
+// --- FUNÇÕES DE EXCLUSÃO (CRITICAL) ---
+function apagarMensagem(peerId, index) {
+    db[peerId].splice(index, 1);
+    if (db[peerId].length === 0) delete db[peerId];
+    localStorage.setItem('chat_privado_db', JSON.stringify(db));
+    renderizarMensagensAdmin();
+    atualizarPainel();
+}
+
+function apagarConversa(peerId) {
+    if (confirm(`Deseja apagar todo o histórico de ${peerId}?`)) {
+        delete db[peerId];
+        localStorage.setItem('chat_privado_db', JSON.stringify(db));
+        if (conversaAtivaAdmin === peerId) {
+            conversaAtivaAdmin = null;
+            document.getElementById('id-conversa-ativa').innerText = "Nenhum";
+        }
+        atualizarPainel();
+        renderizarMensagensAdmin();
+    }
+}
+
+function limparTudo() {
+    if (confirm("AVISO: Isso apagará TODOS os registros de conversas do sistema.")) {
+        db = {};
+        localStorage.clear();
+        atualizarPainel();
+        renderizarMensagensAdmin();
+    }
+}
