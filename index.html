@@ -3,58 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kyo Chat P2P 🚀</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <title>Chat Privado</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <h2>Chat do Kyo</h2>
-            <input type="text" id="user-input" placeholder="Usuário"><br>
-            <input type="password" id="pass-input" placeholder="Senha"><br><br>
-            <button onclick="fazerLogin()">Entrar</button>
-            <button class="btn-alt" onclick="entrarVisitante()">Visitante</button>
+            <h2>Acesso Restrito</h2>
+            <input type="text" placeholder="ID_USUARIO">
+            <input type="password" placeholder="CODIGO_ACESSO">
+            <button>Inicializar</button>
+            <button class="btn-alt">Modo Visitante</button>
         </div>
     </div>
 
-    <div id="painel-kyo" style="display:none;">
-        <div class="painel-header">
-            <h2>Painel de Controle 🖥️</h2>
-            <button onclick="fecharPainel()" style="background:red">Sair do Painel</button>
-        </div>
-        <div class="painel-corpo">
-            <h3>💬 Histórico de Mensagens</h3>
-            <div id="logs-adm"></div>
-            <h3>📁 Arquivos Capturados</h3>
-            <div id="grid-adm" class="grid-arquivos"></div>
-        </div>
-    </div>
-
-    <div id="chat-container" style="display:none;">
-        <div class="header">
-            <div id="user-info">👤 <span id="display-name"></span></div>
-            <button id="admin-btn" style="display:none; background:#000;" onclick="abrirPainelKyo()">PAINEL ADMIN</button>
-            <div id="id-info">ID: <small id="myId">...</small></div>
-        </div>
+    <div id="chat-container">
+        <header class="header">
+            <div id="user-info">USUÁRIO: <span>OPERADOR_01</span></div>
+            <button id="admin-btn" onclick="abrirPainel()">Painel de Controle</button>
+        </header>
 
         <div class="conn-bar">
-            <input id="peerId" placeholder="Cole o ID do amigo aqui">
-            <button onclick="connect()">Conectar</button>
+            <input type="text" placeholder="ID DO DESTINATÁRIO...">
+            <button>Conectar</button>
         </div>
 
-        <div id="chat"></div>
+        <div id="chat">
+            <div class="msg-peer">Sistema pronto. Aguardando estabelecimento de conexão segura...</div>
+            <div class="msg-me">Solicitação de handshake enviada.</div>
+        </div>
 
         <div class="input-area">
-            <input type="file" id="file-input" style="display:none" accept="image/*,.pdf">
-            <button class="btn-alt" onclick="document.getElementById('file-input').click()">📎</button>
-            <input id="msg" placeholder="Digite uma mensagem..." onkeypress="if(event.key==='Enter') send()">
-            <button onclick="send()">➤</button>
+            <button class="btn-alt">+</button>
+            <input type="text" placeholder="Digite sua mensagem...">
+            <button>ENVIAR</button>
         </div>
     </div>
 
-    <audio id="notifSound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
-    <script src="script.js"></script>
+    <div id="painel-admin" style="display: none;">
+        <div class="painel-header">
+            <h2>Administração do Sistema</h2>
+            <button onclick="fecharPainel()">Sair do Painel</button>
+        </div>
+        <div class="painel-corpo">
+            <h3>Logs de Atividade</h3>
+            <div id="logs-adm">
+                <div><small>[16:05:12]</small> <b>SESSÃO_INICIADA</b>: Operador autenticado com sucesso.</div>
+                <div><small>[16:05:40]</small> <b>CRIPTOGRAFIA</b>: Camada de segurança ativa.</div>
+            </div>
+
+            <h3>Arquivos Armazenados</h3>
+            <div class="grid-arquivos">
+                <div class="card-arquivo">
+                    <small>backup_dados.zip</small>
+                    <a href="#">Baixar</a>
+                </div>
+                <div class="card-arquivo">
+                    <small>config_rede.json</small>
+                    <a href="#">Baixar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function abrirPainel() {
+            document.getElementById('painel-admin').style.display = 'flex';
+        }
+        function fecharPainel() {
+            document.getElementById('painel-admin').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
