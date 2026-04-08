@@ -1,16 +1,28 @@
+/* ═══════════════════════════════════════════════
+   VARIAVEIS DE CORES (Paleta Roxo Premium)
+═══════════════════════════════════════════════ */
 :root {
     --bg-main: #0a0a0c;
     --bg-dark: #050505;
-    --accent: #8a2be2; /* Roxo Amethyst */
+    --accent: #8a2be2;           /* Roxo principal */
+    --accent-hover: #9d4edd;    /* Roxo mais claro para hover */
     --accent-glow: rgba(138, 43, 226, 0.3);
     --text-primary: #e0e0e0;
     --text-dim: #666;
     --danger: #ff4b4b;
-    --surface: #121216;
-    --border: #1f1f27;
+    --surface: #121216;          /* Cor dos cards e cabeçalhos */
+    --border: #1f1f27;           /* Cor das bordas discretas */
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+/* ═══════════════════════════════════════════════
+   CONFIGURAÇÕES GERAIS
+═══════════════════════════════════════════════ */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    outline: none; 
+}
 
 body {
     background-color: var(--bg-main);
@@ -19,87 +31,308 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center;
+    overflow: hidden; /* Impede scroll na página inteira */
 }
 
-/* LOGIN DESIGN */
+/* Estilização da barra de rolagem (Scrollbar) */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ═══════════════════════════════════════════════
+   TELA DE LOGIN E REGISTRO
+═══════════════════════════════════════════════ */
 #login-screen {
-    position: fixed; inset: 0; background: var(--bg-dark);
-    display: flex; align-items: center; justify-content: center; z-index: 1000;
+    position: fixed; 
+    inset: 0; 
+    background: var(--bg-dark);
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    z-index: 1000;
 }
 
 .login-box {
     background: var(--surface);
-    padding: 40px; border-radius: 16px; width: 350px;
+    padding: 40px; 
+    border-radius: 16px; 
+    width: 350px;
     border: 1px solid var(--border);
-    text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    text-align: center; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    animation: fadeIn 0.4s ease-out; /* Efeito de entrada suave */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .logo-area { font-size: 40px; margin-bottom: 20px; }
-.login-box h2 { font-size: 18px; letter-spacing: 2px; margin-bottom: 5px; }
+.login-box h2 { font-size: 18px; letter-spacing: 2px; margin-bottom: 5px; color: white; }
 .login-box p { color: var(--text-dim); font-size: 12px; margin-bottom: 30px; }
 
+/* Campos de entrada do Login */
 .login-box input {
-    width: 100%; padding: 14px; margin-bottom: 12px;
-    background: var(--bg-main); border: 1px solid var(--border);
-    border-radius: 8px; color: white;
+    width: 100%; 
+    padding: 14px; 
+    margin-bottom: 12px;
+    background: var(--bg-main); 
+    border: 1px solid var(--border);
+    border-radius: 8px; 
+    color: white;
+    transition: 0.3s;
 }
 
+.login-box input:focus { border-color: var(--accent); background: var(--bg-dark); }
+
+/* Botão principal de ação */
 .login-box button {
-    width: 100%; padding: 14px; background: var(--accent);
-    color: white; border: none; border-radius: 8px; font-weight: bold;
-    cursor: pointer; transition: 0.3s;
+    width: 100%; 
+    padding: 14px; 
+    background: var(--accent);
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    font-weight: bold;
+    cursor: pointer; 
+    transition: 0.3s;
 }
 
-.login-box button:hover { background: #9d4edd; box-shadow: 0 0 15px var(--accent-glow); }
+.login-box button:hover { 
+    background: var(--accent-hover); 
+    box-shadow: 0 0 15px var(--accent-glow); 
+}
 
-/* CHAT INTERFACE */
-#chat-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; background: var(--bg-dark); }
+/* Botão de Visitante (Estilo vazado/outline) */
+.btn-alt {
+    background: transparent !important;
+    border: 1px solid var(--accent) !important;
+    color: var(--accent) !important;
+    margin-top: 15px;
+}
+
+.btn-alt:hover {
+    background: var(--accent-glow) !important;
+    color: white !important;
+}
+
+/* ═══════════════════════════════════════════════
+   INTERFACE DO CHAT
+═══════════════════════════════════════════════ */
+#chat-container { 
+    width: 100%; 
+    max-width: 500px; 
+    display: flex; 
+    flex-direction: column; 
+    background: var(--bg-dark); 
+}
 
 .header {
-    padding: 20px; background: var(--surface); border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px; 
+    background: var(--surface); 
+    border-bottom: 1px solid var(--border);
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
 }
 
 .status-group { display: flex; align-items: center; gap: 10px; font-size: 12px; }
-.dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88; }
+.dot { 
+    width: 8px; height: 8px; 
+    background: #00ff88; 
+    border-radius: 50%; 
+    box-shadow: 0 0 8px #00ff88; 
+}
 
 #admin-btn {
-    background: transparent; border: 1px solid var(--accent); color: var(--accent);
-    padding: 6px 12px; border-radius: 4px; font-size: 10px; cursor: pointer;
+    background: transparent; 
+    border: 1px solid var(--accent); 
+    color: var(--accent);
+    padding: 6px 12px; 
+    border-radius: 4px; 
+    font-size: 10px; 
+    cursor: pointer;
+    font-weight: bold;
 }
 
-.conn-bar { padding: 15px; display: flex; gap: 10px; background: var(--bg-main); }
-.conn-bar input { flex: 1; background: var(--surface); border: 1px solid var(--border); padding: 10px; border-radius: 6px; color: white; }
-.conn-bar button { background: var(--accent); border: none; padding: 0 15px; border-radius: 6px; color: white; cursor: pointer; }
+#admin-btn:hover { background: var(--accent); color: white; }
 
-#chat { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+/* Barra de Conexão (Destinatário) */
+.conn-bar { padding: 15px; display: flex; gap: 10px; background: var(--bg-main); }
+.conn-bar input { 
+    flex: 1; 
+    background: var(--surface); 
+    border: 1px solid var(--border); 
+    padding: 10px; 
+    border-radius: 6px; 
+    color: white; 
+}
+.conn-bar button { 
+    background: var(--accent); 
+    border: none; 
+    padding: 0 15px; 
+    border-radius: 6px; 
+    color: white; 
+    cursor: pointer; 
+}
+
+/* Área de Mensagens */
+#chat { 
+    flex: 1; 
+    padding: 20px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+}
+
 .system-msg { text-align: center; color: var(--text-dim); font-size: 11px; margin: 10px 0; }
 
-.msg-me { align-self: flex-end; background: var(--accent); padding: 10px 15px; border-radius: 12px 12px 2px 12px; font-size: 14px; max-width: 80%; }
-.msg-peer { align-self: flex-start; background: var(--surface); padding: 10px 15px; border-radius: 12px 12px 12px 2px; font-size: 14px; max-width: 80%; border: 1px solid var(--border); }
-
-.input-area { padding: 20px; background: var(--surface); display: flex; gap: 10px; }
-.input-area input { flex: 1; background: var(--bg-main); border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; }
-.input-area button { background: var(--accent); border: none; padding: 0 20px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
-
-/* ADMIN PANEL DESIGN */
-#painel-admin { position: fixed; inset: 0; background: var(--bg-dark); z-index: 2000; display: flex; flex-direction: column; }
-.painel-header { padding: 20px; display: flex; justify-content: space-between; background: var(--surface); border-bottom: 1px solid var(--accent); }
-.close-btn { background: var(--danger); border: none; color: white; padding: 5px 15px; border-radius: 4px; cursor: pointer; }
-
-.admin-layout { display: flex; flex: 1; overflow: hidden; }
-.admin-sidebar { width: 260px; border-right: 1px solid var(--border); padding: 20px; background: var(--bg-main); }
-.admin-sidebar h3 { font-size: 12px; color: var(--text-dim); margin-bottom: 15px; letter-spacing: 1px; }
-
-.conversa-item {
-    background: var(--surface); padding: 12px; border-radius: 8px; margin-bottom: 10px;
-    display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid transparent;
+/* Balões de Mensagem */
+.msg-me { 
+    align-self: flex-end; 
+    background: var(--accent); 
+    padding: 10px 15px; 
+    border-radius: 12px 12px 2px 12px; 
+    font-size: 14px; 
+    max-width: 85%; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-.conversa-item:hover { border-color: var(--accent); }
+
+.msg-peer { 
+    align-self: flex-start; 
+    background: var(--surface); 
+    padding: 10px 15px; 
+    border-radius: 12px 12px 12px 2px; 
+    font-size: 14px; 
+    max-width: 85%; 
+    border: 1px solid var(--border); 
+}
+
+/* Área de Envio */
+.input-area { 
+    padding: 20px; 
+    background: var(--surface); 
+    display: flex; 
+    gap: 10px; 
+    border-top: 1px solid var(--border);
+}
+
+.input-area input { 
+    flex: 1; 
+    background: var(--bg-main); 
+    border: 1px solid var(--border); 
+    padding: 12px; 
+    border-radius: 8px; 
+    color: white; 
+}
+
+.input-area button { 
+    background: var(--accent); 
+    border: none; 
+    padding: 0 20px; 
+    border-radius: 8px; 
+    color: white; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
+/* ═══════════════════════════════════════════════
+   PAINEL DE ADMINISTRAÇÃO
+═══════════════════════════════════════════════ */
+#painel-admin { 
+    position: fixed; 
+    inset: 0; 
+    background: var(--bg-dark); 
+    z-index: 2000; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+.painel-header { 
+    padding: 20px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: var(--surface); 
+    border-bottom: 1px solid var(--accent); 
+}
+
+.close-btn { 
+    background: var(--danger); 
+    border: none; 
+    color: white; 
+    padding: 8px 20px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: bold;
+}
+
+/* Layout dividido do Admin */
+.admin-layout { display: flex; flex: 1; overflow: hidden; }
+
+.admin-sidebar { 
+    width: 280px; 
+    border-right: 1px solid var(--border); 
+    padding: 20px; 
+    background: var(--bg-main); 
+    overflow-y: auto;
+}
+
+.admin-sidebar h3 { font-size: 12px; color: var(--text-dim); margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* Item de conversa na lista do Admin */
+.conversa-item {
+    background: var(--surface); 
+    padding: 14px; 
+    border-radius: 8px; 
+    margin-bottom: 10px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    cursor: pointer; 
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.conversa-item:hover { border-color: var(--accent); background: var(--bg-dark); }
 
 .admin-view { flex: 1; padding: 30px; display: flex; flex-direction: column; gap: 15px; }
-#logs-adm-detalhado { flex: 1; background: #000; border-radius: 12px; padding: 20px; overflow-y: auto; border: 1px solid var(--border); }
 
-.admin-msg-linha { padding: 10px; border-bottom: 1px solid #111; display: flex; justify-content: space-between; font-size: 13px; }
-.del-btn { color: var(--danger); cursor: pointer; font-size: 11px; }
-.danger-link { background: none; border: none; color: var(--danger); font-size: 11px; cursor: pointer; margin-top: 20px; }
+/* Área dos logs de texto */
+#logs-adm-detalhado { 
+    flex: 1; 
+    background: #000; 
+    border-radius: 12px; 
+    padding: 20px; 
+    overflow-y: auto; 
+    border: 1px solid var(--border); 
+}
+
+.admin-msg-linha { 
+    padding: 12px; 
+    border-bottom: 1px solid #111; 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 13px; 
+    align-items: center;
+}
+
+.del-btn { 
+    color: var(--danger); 
+    cursor: pointer; 
+    font-weight: bold;
+    padding: 5px 10px;
+}
+
+.danger-link { 
+    background: none; 
+    border: none; 
+    color: var(--danger); 
+    font-size: 11px; 
+    cursor: pointer; 
+    margin-top: 20px; 
+    text-decoration: underline;
+}

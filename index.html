@@ -10,21 +10,38 @@
 <body>
 
     <div id="login-screen">
-        <div class="login-box">
+        <div class="login-box" id="box-principal">
             <div class="logo-area">🔒</div>
             <h2>TERMINAL DE ACESSO</h2>
-            <p>Insira suas credenciais de operador</p>
+            <p>Insira suas credenciais ou entre como convidado</p>
+            
             <input type="text" id="user-input" placeholder="Usuário">
             <input type="password" id="pass-input" placeholder="Senha de Acesso">
+            
             <button onclick="fazerLogin()">AUTENTICAR</button>
+            <button class="btn-alt" onclick="prepararVisitante()">ENTRAR COMO VISITANTE</button>
+        </div>
+    
+        <div class="login-box" id="box-visitante" style="display:none;">
+            <div class="logo-area">👤</div>
+            <h2>REGISTRO DE VISITANTE</h2>
+            <p>Como deseja ser identificado na rede?</p>
+            
+            <input type="text" id="visitante-nome" placeholder="Seu Nome/Alias">
+            <input type="text" id="visitante-id" placeholder="Crie um ID único (Ex: KYO-77)">
+            
+            <button onclick="finalizarCadastroVisitante()">CRIAR IDENTIDADE</button>
+            <button class="danger-link" onclick="voltarLogin()">Cancelar</button>
         </div>
     </div>
 
     <div id="chat-container" style="display: none;">
         <header class="header">
             <div class="status-group">
-                <span class="dot"></span>
-                <div id="user-info">ID: <span id="myId">Conectando...</span></div>
+                <span class="dot"></span> <div id="user-info">
+                    <span id="display-name" style="color: var(--accent); font-weight: bold;"></span> 
+                    | ID: <span id="myId">Conectando...</span>
+                </div>
             </div>
             <button id="admin-btn" style="display:none;" onclick="abrirPainel()">PAINEL MONITOR</button>
         </header>
@@ -52,14 +69,16 @@
         
         <div class="admin-layout">
             <aside class="admin-sidebar">
-                <h3>ATIVIDADE</h3>
+                <h3>ATIVIDADE RECENTE</h3>
                 <div id="lista-conversas"></div>
                 <button class="danger-link" onclick="limparTudo()">Limpar Database</button>
             </aside>
             
             <main class="admin-view">
-                <h3>LOGS: <span id="id-conversa-ativa">Selecionar ID</span></h3>
-                <div id="logs-adm-detalhado"></div>
+                <h3>LOGS DA SESSÃO: <span id="id-conversa-ativa" style="color: var(--accent);">Selecionar ID</span></h3>
+                <div id="logs-adm-detalhado">
+                    <p style="color: #444; text-align: center; margin-top: 50px;">Selecione uma conversa ao lado para auditar as mensagens.</p>
+                </div>
             </main>
         </div>
     </div>
