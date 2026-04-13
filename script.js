@@ -34,11 +34,12 @@ const USUARIOS_PADRAO = {
 
 function carregarUsuarios() {
     const dados = localStorage.getItem('nexo_usuarios');
-    if (!dados) {
-        localStorage.setItem('nexo_usuarios', JSON.stringify(USUARIOS_PADRAO));
-        return { ...USUARIOS_PADRAO };
-    }
-    return JSON.parse(dados);
+    const salvos = dados ? JSON.parse(dados) : {};
+    // Mescla: usuários padrão + usuários cadastrados pelo painel
+    // Os do painel têm prioridade caso o mesmo login exista nos dois
+    const merged = { ...USUARIOS_PADRAO, ...salvos };
+    localStorage.setItem('nexo_usuarios', JSON.stringify(merged));
+    return merged;
 }
 
 function salvarUsuarios(usuarios) {
