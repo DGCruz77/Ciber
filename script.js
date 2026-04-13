@@ -24,7 +24,10 @@ let usuarioAtual = null;
 ───────────────────────────────────────────── */
 
 const USUARIOS_PADRAO = {
-    "admin": { senha: "123", permissao: "admin" }
+    "admin": { senha: "123", permissao: "admin" },
+    "Davi": { senha: "2907", permissao: "usuario" },
+    "Juju": { senha: "2907", permissao: "usuario" },
+    "Moreti": { senha: "goldenboy", permissao: "usuario" }
     // Adicione mais aqui:
     // "joao": { senha: "minhasenha", permissao: "usuario" }
 };
