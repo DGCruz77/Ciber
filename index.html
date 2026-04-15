@@ -56,8 +56,7 @@
                 <input type="text" id="peerId" placeholder="ID do Amigo">
                 <button onclick="conectar()" title="Nova Conversa">+</button>
             </div>
-            <div id="active-chats-list" class="chats-list">
-                </div>
+            <div id="active-chats-list" class="chats-list"></div>
             <button id="admin-btn" class="btn-admin-nav" style="display:none;" onclick="abrirPainel()">Painel</button>
         </nav>
 
@@ -73,23 +72,8 @@
                 <button onclick="pararCompartilhamento()" class="btn-stop">Parar Transmissão</button>
             </div>
 
-            <div id="multi-chat-wrapper">
-                </div>
+            <div id="multi-chat-wrapper"></div>
         </main>
-    </div>
-
-    <div id="painel-admin" style="display:none;">
-        <div class="modal-admin">
-            <header>
-                <h2>Monitor de Rede</h2>
-                <button onclick="fecharPainel()">✕</button>
-            </header>
-            <div class="admin-content">
-                <div id="lista-usuarios"></div>
-                <hr>
-                <div id="logs-adm-detalhado"></div>
-            </div>
-        </div>
     </div>
 
     <script src="script.js"></script>
