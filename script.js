@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════
-   NEXOCHAT — SCRIPT PRINCIPAL v2.0
+   CHAT PRIVADO DG — SCRIPT PRINCIPAL v2.0
 ═══════════════════════════════════════════════ */
-
 
 /* ─────────────────────────────────────────────
    1. ESTADO GLOBAL
@@ -12,15 +11,13 @@ let conn;
 let currentCall;
 let notificacoesPermitidas = false;
 
-let dbLogs = JSON.parse(localStorage.getItem('nexo_logs')) || {};
+// Mudança de domínio nos logs
+let dbLogs = JSON.parse(localStorage.getItem('chatprivadodg_logs')) || {};
 let usuarioAtual = null;
 
 
 /* ─────────────────────────────────────────────
    2. BANCO DE DADOS DE USUÁRIOS
-   ─────────────────────────────────────────────
-   Para adicionar usuários fixos sem usar o painel,
-   insira entradas no objeto USUARIOS_PADRAO abaixo.
 ───────────────────────────────────────────── */
 
 const USUARIOS_PADRAO = {
@@ -28,22 +25,19 @@ const USUARIOS_PADRAO = {
     "Davi": { senha: "2907", permissao: "usuario" },
     "Juju": { senha: "2907", permissao: "usuario" },
     "Moreti": { senha: "goldenboy", permissao: "usuario" }
-    // Adicione mais aqui:
-    // "joao": { senha: "minhasenha", permissao: "usuario" }
 };
 
 function carregarUsuarios() {
-    const dados = localStorage.getItem('nexo_usuarios');
+    // Mudança de domínio no armazenamento de usuários
+    const dados = localStorage.getItem('chatprivadodg_usuarios');
     const salvos = dados ? JSON.parse(dados) : {};
-    // Mescla: usuários padrão + usuários cadastrados pelo painel
-    // Os do painel têm prioridade caso o mesmo login exista nos dois
     const merged = { ...USUARIOS_PADRAO, ...salvos };
-    localStorage.setItem('nexo_usuarios', JSON.stringify(merged));
+    localStorage.setItem('chatprivadodg_usuarios', JSON.stringify(merged));
     return merged;
 }
 
 function salvarUsuarios(usuarios) {
-    localStorage.setItem('nexo_usuarios', JSON.stringify(usuarios));
+    localStorage.setItem('chatprivadodg_usuarios', JSON.stringify(usuarios));
 }
 
 
@@ -215,7 +209,7 @@ function enviarArquivo(inputEl) {
             arquivo:     true,
             nomeArquivo: arquivo.name,
             tipoArquivo: arquivo.type,
-            conteudo:    evento.target.result
+            conteudo:     evento.target.result
         };
         conn.send(pacote);
         registrarLog(conn.peer, "Enviado", `[Arquivo: ${arquivo.name}]`);
@@ -233,15 +227,22 @@ function receberArquivo(pacote) {
 
 
 /* ─────────────────────────────────────────────
-   8. COMPARTILHAMENTO DE TELA
+   8. COMPARTILHAMENTO DE TELA (COM ÁUDIO)
 ───────────────────────────────────────────── */
 
 async function alternarCompartilhamentoDeTela() {
     if (!conn || !conn.open) { alert("Conecte-se a um destinatário primeiro."); return; }
     try {
-        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-        currentCall  = peer.call(conn.peer, stream);
-        renderizarMensagem("Você está compartilhando sua tela.", "system-msg");
+        // Alteração: Ativado áudio no compartilhamento de tela
+        const stream = await navigator.mediaDevices.getDisplayMedia({ 
+            video: true, 
+            audio: true 
+        });
+        
+        currentCall = peer.call(conn.peer, stream);
+        renderizarMensagem("Você está compartilhando sua tela e áudio.", "system-msg");
+        
+        // Finaliza se o usuário clicar no botão "Parar compartilhamento" nativo do navegador
         stream.getVideoTracks()[0].onended = () => pararCompartilhamento();
     } catch (erro) {
         console.warn("Compartilhamento cancelado:", erro);
@@ -251,7 +252,7 @@ async function alternarCompartilhamentoDeTela() {
 function pararCompartilhamento() {
     document.getElementById('video-grid').style.display = 'none';
     if (currentCall) { currentCall.close(); currentCall = null; }
-    renderizarMensagem("Compartilhamento de tela encerrado.", "system-msg");
+    renderizarMensagem("Compartilhamento encerrado.", "system-msg");
 }
 
 
@@ -283,7 +284,7 @@ function renderizarMensagem(conteudo, classe, ehHTML = false) {
         const div = document.createElement('div');
         div.className = classe;
         if (ehHTML) div.innerHTML = conteudo;
-        else        div.innerText = conteudo;
+        else         div.innerText = conteudo;
         chatBox.appendChild(div);
     }
 
@@ -321,7 +322,7 @@ function trocarAba(abaId, botao) {
 function registrarLog(peerId, tipo, texto) {
     if (!dbLogs[peerId]) dbLogs[peerId] = [];
     dbLogs[peerId].push({ hora: new Date().toLocaleTimeString('pt-BR'), tipo, texto });
-    localStorage.setItem('nexo_logs', JSON.stringify(dbLogs));
+    localStorage.setItem('chatprivadodg_logs', JSON.stringify(dbLogs));
     if (document.getElementById('painel-admin').style.display !== 'none') atualizarListaLogs();
 }
 
@@ -361,7 +362,7 @@ function excluirConversa(peerId, evento) {
     evento.stopPropagation();
     if (!confirm(`Excluir histórico de ${peerId}?`)) return;
     delete dbLogs[peerId];
-    localStorage.setItem('nexo_logs', JSON.stringify(dbLogs));
+    localStorage.setItem('chatprivadodg_logs', JSON.stringify(dbLogs));
     atualizarListaLogs();
     document.getElementById('logs-adm-detalhado').innerHTML = '<div class="empty-state">Selecione uma conversa na lista ao lado.</div>';
     document.getElementById('id-conversa-ativa').innerText = '— selecione um ID —';
@@ -370,7 +371,7 @@ function excluirConversa(peerId, evento) {
 function limparTudo() {
     if (!confirm("Limpar TODOS os logs? Esta ação não pode ser desfeita.")) return;
     dbLogs = {};
-    localStorage.removeItem('nexo_logs');
+    localStorage.removeItem('chatprivadodg_logs');
     atualizarListaLogs();
     document.getElementById('logs-adm-detalhado').innerHTML = '<div class="empty-state">Selecione uma conversa na lista ao lado.</div>';
 }
@@ -378,9 +379,6 @@ function limparTudo() {
 
 /* ─────────────────────────────────────────────
    12. PAINEL ADMIN — GESTÃO DE USUÁRIOS
-   ─────────────────────────────────────────────
-   Cadastre, liste e remova usuários do sistema.
-   Dados salvos em localStorage ('nexo_usuarios').
 ───────────────────────────────────────────── */
 
 function cadastrarUsuario() {
@@ -402,11 +400,6 @@ function cadastrarUsuario() {
         feedbackEl.innerText = 'A senha deve ter pelo menos 4 caracteres.';
         return;
     }
-    if (!/^[a-z0-9._-]+$/.test(login)) {
-        feedbackEl.className = 'form-feedback error';
-        feedbackEl.innerText = 'Use apenas letras, números, ponto ou hífen.';
-        return;
-    }
 
     const usuarios = carregarUsuarios();
     if (usuarios[login]) {
@@ -423,8 +416,6 @@ function cadastrarUsuario() {
 
     document.getElementById('novo-usuario-login').value = '';
     document.getElementById('novo-usuario-senha').value = '';
-    document.getElementById('novo-usuario-permissao').value = 'usuario';
-
     renderizarListaUsuarios();
 }
 
@@ -447,11 +438,6 @@ function renderizarListaUsuarios() {
     listaEl.innerHTML = "";
     const usuarios = carregarUsuarios();
     const logins   = Object.keys(usuarios);
-
-    if (logins.length === 0) {
-        listaEl.innerHTML = '<p style="font-size:13px; color:var(--text-hint);">Nenhum usuário cadastrado.</p>';
-        return;
-    }
 
     logins.forEach(login => {
         const { permissao } = usuarios[login];
