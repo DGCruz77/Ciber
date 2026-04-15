@@ -1,126 +1,137 @@
 :root {
-    --bg-main: #ffffff;
-    --bg-secondary: #fafafa;
-    --border: #dbdbdb;
-    --accent: #0095f6;
-    --text: #262626;
-    --text-light: #8e8e8e;
-    --me-msg: #efefef;
+    --bg-page: #f0f4f0;
+    --verde-br: #009739;
+    --amarelo-br: #ffdf00;
+    --azul-br: #002776;
+    --text-dark: #1a1a1a;
+    --white: #ffffff;
+    --shadow: 0 8px 30px rgba(0,0,0,0.12);
+    --radius: 12px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
 body { 
-    font-family: 'Inter', sans-serif; 
-    background-color: var(--bg-main); 
-    color: var(--text);
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* LOGIN DESIGN */
-#login-screen {
+    background: linear-gradient(135deg, var(--verde-br), var(--azul-br));
     height: 100vh;
     display: flex;
-    align-items: center;
     justify-content: center;
-    background: var(--bg-secondary);
+    align-items: center;
+}
+
+/* LOGIN */
+#login-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
 }
 
 .login-panel {
-    background: white;
+    background: var(--white);
     padding: 40px;
-    border: 1px solid var(--border);
-    width: 350px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 400px;
     text-align: center;
+    border-bottom: 5px solid var(--amarelo-br);
 }
 
 .brand-name {
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 15px;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--verde-br);
+    margin-bottom: 10px;
 }
 
-.brand-tagline {
-    color: var(--text-light);
-    font-size: 14px;
-    margin-bottom: 30px;
-}
+.brand-tagline { color: #666; margin-bottom: 25px; font-size: 14px; }
 
 .form-group input {
     width: 100%;
-    padding: 10px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    margin-bottom: 8px;
-    font-size: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
 }
+
+.form-group input:focus { border-color: var(--verde-br); outline: none; }
 
 .btn-login {
     width: 100%;
-    background: var(--accent);
+    padding: 14px;
+    background: var(--verde-br);
     color: white;
     border: none;
-    padding: 8px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    margin-top: 10px;
+    font-size: 16px;
+    transition: transform 0.2s;
 }
 
-/* APP LAYOUT */
+.btn-login:hover { transform: scale(1.02); background: #007a2e; }
+
+.btn-text {
+    background: none; border: none; color: var(--azul-br);
+    margin-top: 15px; cursor: pointer; font-weight: 600;
+}
+
+/* INTERFACE PRINCIPAL */
 #main-app {
+    width: 95vw;
+    height: 90vh;
+    background: var(--white);
+    border-radius: var(--radius);
     display: flex;
-    height: 100vh;
+    overflow: hidden;
+    box-shadow: var(--shadow);
 }
 
 .side-nav {
-    width: 250px;
-    border-right: 1px solid var(--border);
+    width: 300px;
+    background: var(--azul-br);
+    color: white;
+    padding: 25px;
     display: flex;
     flex-direction: column;
-    padding: 20px;
 }
 
-.nav-logo { font-weight: 700; font-size: 22px; margin-bottom: 30px; }
+.nav-logo { font-size: 24px; font-weight: 800; color: var(--amarelo-br); margin-bottom: 30px; }
 
-.user-badge { margin-bottom: 20px; }
-.user-badge span { display: block; font-weight: 600; }
-.user-badge small { color: var(--text-light); }
+.user-badge { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+.user-badge span { display: block; font-weight: 700; }
+.user-badge small { color: #ccc; }
 
-.conn-area { display: flex; gap: 5px; margin-bottom: 20px; }
-.conn-area input { flex: 1; border: 1px solid var(--border); padding: 5px; border-radius: 5px; }
-.conn-area button { background: var(--text); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+.conn-area { display: flex; gap: 8px; margin-bottom: 20px; }
+.conn-area input { flex: 1; padding: 10px; border-radius: 5px; border: none; }
+.conn-area button { background: var(--amarelo-br); border: none; padding: 10px 15px; border-radius: 5px; font-weight: 700; cursor: pointer; }
 
-/* CHAT AREA */
-#chat-desktop { flex: 1; background: var(--bg-main); position: relative; }
+/* CHAT WINDOW */
+#chat-desktop { flex: 1; display: flex; flex-direction: column; background: #f9f9f9; }
 
-.empty-state {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%; text-align: center;
-}
-.empty-state .icon { font-size: 50px; margin-bottom: 10px; }
-
-#multi-chat-wrapper {
-    height: 100%;
-    display: flex;
-}
+#multi-chat-wrapper { flex: 1; display: flex; overflow-x: auto; }
 
 .chat-window {
-    flex: 1;
+    min-width: 100%;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--border);
+    border-left: 1px solid #eee;
 }
 
 .chat-header {
-    padding: 15px;
-    border-bottom: 1px solid var(--border);
+    padding: 20px;
+    background: white;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--azul-br);
 }
 
 .chat-messages {
@@ -129,31 +140,48 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* Pattern leve */
 }
 
 .msg {
-    max-width: 70%;
-    padding: 8px 12px;
-    border-radius: 18px;
-    font-size: 14px;
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 15px;
     line-height: 1.4;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.msg-me { align-self: flex-end; background: var(--accent); color: white; }
-.msg-peer { align-self: flex-start; border: 1px solid var(--border); }
+.msg-me { align-self: flex-end; background: var(--verde-br); color: white; border-bottom-right-radius: 2px; }
+.msg-peer { align-self: flex-start; background: white; color: var(--text-dark); border-bottom-left-radius: 2px; }
 
 .chat-input-area {
     padding: 20px;
+    background: white;
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
 }
 
 .chat-input-area input {
     flex: 1;
-    padding: 10px 15px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
+    padding: 15px;
+    border: 2px solid #eee;
+    border-radius: 30px;
+    outline: none;
 }
 
-.btn-icon-chat { background: none; border: none; cursor: pointer; font-size: 18px; }
+.btn-icon-chat {
+    background: var(--azul-br);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}

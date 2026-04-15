@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatPrivadoDG | Conexão Humana</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>ChatPrivadoDG | P2P Brasileiro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
@@ -14,64 +12,56 @@
 
     <div id="login-screen">
         <div class="login-panel">
-            <div class="login-card" id="box-principal">
-                <h1 class="brand-name">ChatPrivadoDG</h1>
-                <p class="brand-tagline">Conecte-se com segurança e privacidade.</p>
-                
+            <h1 class="brand-name">ChatDG 🇧🇷</h1>
+            <p class="brand-tagline">Privacidade total. Sem intermediários.</p>
+            
+            <div id="box-principal">
                 <div class="form-group">
-                    <input type="text" id="user-input" placeholder="Usuário">
+                    <input type="text" id="user-input" placeholder="Seu usuário">
                 </div>
                 <div class="form-group">
-                    <input type="password" id="pass-input" placeholder="Senha">
+                    <input type="password" id="pass-input" placeholder="Sua senha">
                 </div>
-
-                <button class="btn-login" onclick="fazerLogin()">Entrar</button>
-                <div class="divider"><span>ou</span></div>
+                <button class="btn-login" onclick="fazerLogin()">ACESSAR CHAT</button>
                 <button class="btn-text" onclick="mostrarFormVisitante()">Entrar como Visitante</button>
             </div>
 
-            <div class="login-card" id="box-visitante" style="display:none;">
-                <h2 class="brand-name">Visitante</h2>
+            <div id="box-visitante" style="display:none;">
                 <div class="form-group">
-                    <input type="text" id="visitante-nome" placeholder="Seu Nome">
+                    <input type="text" id="visitante-nome" placeholder="Nome de exibição">
                 </div>
                 <div class="form-group">
-                    <input type="text" id="visitante-id" placeholder="ID Único (ex: USER-123)">
+                    <input type="text" id="visitante-id" placeholder="ID (Ex: NEXO-01)">
                 </div>
-                <button class="btn-login" onclick="finalizarCadastroVisitante()">Criar Identidade</button>
-                <button class="btn-text" onclick="voltarLogin()">Voltar ao Login</button>
+                <button class="btn-login" onclick="finalizarCadastroVisitante()">CRIAR ACESSO</button>
+                <button class="btn-text" onclick="voltarLogin()">Voltar ao início</button>
             </div>
         </div>
     </div>
 
     <div id="main-app" style="display:none;">
         <nav class="side-nav">
-            <div class="nav-logo">DG</div>
+            <div class="nav-logo">ChatPrivadoDG</div>
             <div class="user-badge">
-                <span id="display-name">Nome</span>
-                <small id="myId">ID</small>
+                <span id="display-name">Carregando...</span>
+                <small>ID: <b id="myId">---</b></small>
             </div>
-            <hr>
+            
             <div class="conn-area">
-                <input type="text" id="peerId" placeholder="ID do Amigo">
-                <button onclick="conectar()" title="Nova Conversa">+</button>
+                <input type="text" id="peerId" placeholder="ID do amigo">
+                <button onclick="conectar()" title="Conectar">Bora</button>
             </div>
-            <div id="active-chats-list" class="chats-list"></div>
-            <button id="admin-btn" class="btn-admin-nav" style="display:none;" onclick="abrirPainel()">Painel</button>
+
+            <div id="active-chats-list"></div>
+            <button id="admin-btn" class="btn-login" style="display:none; margin-top: auto; background: var(--azul-br); border: 1px solid var(--amarelo-br);" onclick="abrirPainel()">PAINEL MONITOR</button>
         </nav>
 
         <main id="chat-desktop">
-            <div id="welcome-screen" class="empty-state">
-                <div class="icon">✉️</div>
-                <h2>Suas Mensagens</h2>
-                <p>Envie fotos e mensagens privadas para um amigo.</p>
+            <div id="welcome-screen" class="empty-state" style="padding: 100px; text-align: center; color: #999;">
+                <h2>🇧🇷 Bem-vindo ao ChatDG</h2>
+                <p>Conecte-se com alguém usando o ID ao lado.</p>
             </div>
             
-            <div id="video-grid" style="display:none;">
-                <video id="remote-video" autoplay playsinline></video>
-                <button onclick="pararCompartilhamento()" class="btn-stop">Parar Transmissão</button>
-            </div>
-
             <div id="multi-chat-wrapper"></div>
         </main>
     </div>
