@@ -3,223 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexoChat | Comunicação Segura</title>
+    <title>ChatPrivadoDG | Conexão Humana</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
 
-    <!-- ════════════════════════════════════════════
-         TELA DE LOGIN E CADASTRO
-    ════════════════════════════════════════════ -->
     <div id="login-screen">
-
-        <!-- Decoração de fundo com bolhas de cor -->
-        <div class="bg-decoration">
-            <div class="blob blob-1"></div>
-            <div class="blob blob-2"></div>
-            <div class="blob blob-3"></div>
-        </div>
-
-        <!-- ── PAINEL ESQUERDO: Branding ── -->
-        <div class="login-branding">
-            <div class="brand-logo">✦</div>
-            <h1>NexoChat</h1>
-            <p>Comunicação ponto-a-ponto criptografada. Sem servidores centrais. Sem rastros.</p>
-            <div class="brand-features">
-                <div class="feature-pill">🔐 Criptografia P2P</div>
-                <div class="feature-pill">📁 Envio de Arquivos</div>
-                <div class="feature-pill">🖥️ Compartilhamento de Tela</div>
-            </div>
-        </div>
-
-        <!-- ── PAINEL DIREITO: Formulários ── -->
         <div class="login-panel">
-
-            <!-- Formulário de Login (Admin / usuários cadastrados) -->
             <div class="login-card" id="box-principal">
-                <div class="card-header">
-                    <span class="card-icon">🔒</span>
-                    <div>
-                        <h2>Acessar Sistema</h2>
-                        <p>Entre com suas credenciais</p>
-                    </div>
-                </div>
-
+                <h1 class="brand-name">ChatPrivadoDG</h1>
+                <p class="brand-tagline">Conecte-se com segurança e privacidade.</p>
+                
                 <div class="form-group">
-                    <label>Usuário</label>
-                    <input type="text" id="user-input" placeholder="seu.usuario" autocomplete="username">
+                    <input type="text" id="user-input" placeholder="Usuário">
                 </div>
                 <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="pass-input" placeholder="••••••••" autocomplete="current-password">
+                    <input type="password" id="pass-input" placeholder="Senha">
                 </div>
 
-                <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+                <button class="btn-login" onclick="fazerLogin()">Entrar</button>
                 <div class="divider"><span>ou</span></div>
-                <button class="btn-outline" onclick="mostrarFormVisitante()">Entrar como Visitante</button>
+                <button class="btn-text" onclick="mostrarFormVisitante()">Entrar como Visitante</button>
             </div>
 
-            <!-- Formulário de Visitante -->
             <div class="login-card" id="box-visitante" style="display:none;">
-                <div class="card-header">
-                    <span class="card-icon">👤</span>
-                    <div>
-                        <h2>Acesso Visitante</h2>
-                        <p>Crie uma identidade temporária</p>
-                    </div>
-                </div>
-
+                <h2 class="brand-name">Visitante</h2>
                 <div class="form-group">
-                    <label>Seu Nome / Alias</label>
-                    <input type="text" id="visitante-nome" placeholder="Ex: Agente K">
+                    <input type="text" id="visitante-nome" placeholder="Seu Nome">
                 </div>
                 <div class="form-group">
-                    <label>ID Único na Rede</label>
-                    <input type="text" id="visitante-id" placeholder="Ex: KYO-77 (sem espaços)">
-                    <span class="form-hint">Este ID é como outros usuários te encontrarão.</span>
+                    <input type="text" id="visitante-id" placeholder="ID Único (ex: USER-123)">
                 </div>
-
-                <button class="btn-primary" onclick="finalizarCadastroVisitante()">Criar Identidade</button>
-                <button class="btn-ghost" onclick="voltarLogin()">← Voltar ao Login</button>
+                <button class="btn-login" onclick="finalizarCadastroVisitante()">Criar Identidade</button>
+                <button class="btn-text" onclick="voltarLogin()">Voltar ao Login</button>
             </div>
-
         </div>
     </div>
 
-    <!-- ════════════════════════════════════════════
-         INTERFACE PRINCIPAL DO CHAT
-    ════════════════════════════════════════════ -->
-    <div id="chat-container" style="display:none;">
-
-        <!-- Cabeçalho do Chat -->
-        <header class="chat-header">
-            <div class="header-left">
-                <div class="header-logo">✦</div>
-                <div class="header-info">
-                    <span id="display-name" class="header-name">Carregando...</span>
-                    <div class="header-status">
-                        <span class="status-dot"></span>
-                        <span>ID: <strong id="myId">conectando...</strong></span>
-                    </div>
+    <div id="main-app" style="display:none;">
+        <nav class="side-nav">
+            <div class="nav-logo">DG</div>
+            <div class="user-badge">
+                <span id="display-name">Nome</span>
+                <small id="myId">ID</small>
+            </div>
+            <hr>
+            <div class="conn-area">
+                <input type="text" id="peerId" placeholder="ID do Amigo">
+                <button onclick="conectar()" title="Nova Conversa">+</button>
+            </div>
+            <div id="active-chats-list" class="chats-list">
                 </div>
-            </div>
-            <div class="header-actions">
-                <button id="screen-btn" class="icon-btn" onclick="alternarCompartilhamentoDeTela()" title="Compartilhar Tela">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                </button>
-                <button id="admin-btn" class="btn-admin" style="display:none;" onclick="abrirPainel()">Monitor</button>
-            </div>
-        </header>
+            <button id="admin-btn" class="btn-admin-nav" style="display:none;" onclick="abrirPainel()">Painel</button>
+        </nav>
 
-        <!-- Área de Visualização de Tela Remota -->
-        <div id="video-grid" style="display:none; background:#111; position:relative;">
-            <video id="remote-video" autoplay playsinline style="width:100%; max-height:280px; display:block;"></video>
-            <button onclick="pararCompartilhamento()" class="stop-share-btn">✕ Parar</button>
-        </div>
-
-        <!-- Barra de Conexão com Destinatário -->
-        <div class="conn-bar">
-            <div class="conn-bar-inner">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="conn-icon"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                <input type="text" id="peerId" placeholder="ID do destinatário (ex: KYO-77)">
-                <button class="btn-connect" onclick="conectar()">Conectar</button>
+        <main id="chat-desktop">
+            <div id="welcome-screen" class="empty-state">
+                <div class="icon">✉️</div>
+                <h2>Suas Mensagens</h2>
+                <p>Envie fotos e mensagens privadas para um amigo.</p>
             </div>
-        </div>
-
-        <!-- Área de Mensagens -->
-        <div id="chat">
-            <div class="system-msg">
-                <span>Aguardando conexão segura...</span>
+            
+            <div id="video-grid" style="display:none;">
+                <video id="remote-video" autoplay playsinline></video>
+                <button onclick="pararCompartilhamento()" class="btn-stop">Parar Transmissão</button>
             </div>
-        </div>
 
-        <!-- Área de Entrada de Mensagem -->
-        <div class="input-area">
-            <label for="file-input" class="file-label" title="Enviar Arquivo">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-            </label>
-            <input type="file" id="file-input" style="display:none;" onchange="enviarArquivo(this)">
-            <input type="text" id="msg" placeholder="Escreva sua mensagem..." onkeydown="if(event.key==='Enter' && !event.shiftKey) enviarMensagem()">
-            <button class="btn-send" onclick="enviarMensagem()">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            </button>
-        </div>
+            <div id="multi-chat-wrapper">
+                </div>
+        </main>
     </div>
 
-    <!-- ════════════════════════════════════════════
-         PAINEL DE ADMINISTRAÇÃO
-    ════════════════════════════════════════════ -->
     <div id="painel-admin" style="display:none;">
-
-        <div class="painel-header">
-            <div class="painel-title">
-                <span class="painel-icon">📊</span>
-                <div>
-                    <h2>Monitor de Rede</h2>
-                    <p>Histórico de conversas e gestão de usuários</p>
-                </div>
-            </div>
-            <button onclick="fecharPainel()" class="btn-fechar">Fechar</button>
-        </div>
-
-        <!-- Abas de Navegação do Painel -->
-        <div class="painel-tabs">
-            <button class="tab-btn active" onclick="trocarAba('logs', this)">Logs de Conversa</button>
-            <button class="tab-btn" onclick="trocarAba('usuarios', this)">Gestão de Usuários</button>
-        </div>
-
-        <!-- ── ABA: LOGS ── -->
-        <div id="aba-logs" class="aba-conteudo">
-            <div class="admin-layout">
-                <aside class="admin-sidebar">
-                    <h3 class="sidebar-label">Sessões Ativas</h3>
-                    <div id="lista-conversas"></div>
-                    <button class="btn-danger-link" onclick="limparTudo()">🗑️ Limpar tudo</button>
-                </aside>
-                <main class="admin-view">
-                    <div class="admin-view-header">
-                        <h3>Logs de: <span id="id-conversa-ativa" class="accent-text">— selecione um ID —</span></h3>
-                    </div>
-                    <div id="logs-adm-detalhado">
-                        <div class="empty-state">Selecione uma conversa na lista ao lado para auditar.</div>
-                    </div>
-                </main>
-            </div>
-        </div>
-
-        <!-- ── ABA: GESTÃO DE USUÁRIOS ── -->
-        <div id="aba-usuarios" class="aba-conteudo" style="display:none;">
-            <div class="usuarios-layout">
-
-                <div class="usuarios-lista-card">
-                    <h3 class="sidebar-label">Usuários Cadastrados</h3>
-                    <div id="lista-usuarios"></div>
-                </div>
-
-                <div class="usuarios-form-card">
-                    <h3 class="sidebar-label">Novo Usuário</h3>
-                    <div class="form-group">
-                        <label>Usuário (login)</label>
-                        <input type="text" id="novo-usuario-login" placeholder="ex: joao.silva">
-                    </div>
-                    <div class="form-group">
-                        <label>Senha</label>
-                        <input type="password" id="novo-usuario-senha" placeholder="mínimo 4 caracteres">
-                    </div>
-                    <div class="form-group">
-                        <label>Permissão</label>
-                        <select id="novo-usuario-permissao">
-                            <option value="usuario">Usuário (sem painel admin)</option>
-                            <option value="admin">Administrador (acesso total)</option>
-                        </select>
-                    </div>
-                    <button class="btn-primary" onclick="cadastrarUsuario()">Cadastrar Usuário</button>
-                    <div id="msg-feedback-usuario" class="form-feedback"></div>
-                </div>
+        <div class="modal-admin">
+            <header>
+                <h2>Monitor de Rede</h2>
+                <button onclick="fecharPainel()">✕</button>
+            </header>
+            <div class="admin-content">
+                <div id="lista-usuarios"></div>
+                <hr>
+                <div id="logs-adm-detalhado"></div>
             </div>
         </div>
     </div>
